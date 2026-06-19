@@ -1,3 +1,10 @@
+import logging
+
+# A logger named after this module ("pages.login_page"). pytest collects these
+# messages and routes them to the console and the log file (see pytest.ini).
+logger = logging.getLogger(__name__)
+
+
 class LoginPage:
     """Page Object for the SauceDemo login page.
 
@@ -17,14 +24,19 @@ class LoginPage:
 
     def navigate(self):
         """Open the login page."""
+        logger.info("Navigating to the login page")
         self.page.goto(self.PATH)
 
     def login(self, username, password):
         """Fill in the credentials and submit the form."""
+        # Log the username only -- never log passwords.
+        logger.info("Submitting login form as '%s'", username)
         self.username_input.fill(username)
         self.password_input.fill(password)
         self.login_button.click()
 
     def get_error_message(self):
         """Return the text of the error banner shown on a failed login."""
-        return self.error_message.text_content()
+        message = self.error_message.text_content()
+        logger.info("Error banner shown: %s", message)
+        return message
